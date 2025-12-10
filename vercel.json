@@ -1,7 +1,3 @@
 {
-  "functions": {
-    "api/*.java": {
-      "runtime": "@vercel/java@4.1.1"
-    }
-  }
+  "version": 2
 }

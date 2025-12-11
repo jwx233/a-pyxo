@@ -41,6 +41,18 @@ func Delete(table, filter string) ([]byte, error) {
 	return request("DELETE", endpoint, "")
 }
 
+// 构建过滤条件
+func BuildFilter(r *http.Request) string {
+	var filters []string
+	if id := r.URL.Query().Get("id"); id != "" {
+		filters = append(filters, "id=eq."+id)
+	}
+	if userID := r.URL.Query().Get("user_id"); userID != "" {
+		filters = append(filters, "user_id=eq."+userID)
+	}
+	return strings.Join(filters, "&")
+}
+
 // ============ 内部方法 ============
 
 func request(method, endpoint, body string) ([]byte, error) {

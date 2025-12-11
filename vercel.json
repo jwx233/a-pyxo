@@ -1,9 +1,6 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/db/get/:table", "destination": "/api/db/get" },
-    { "source": "/api/db/insert/:table", "destination": "/api/db/insert" },
-    { "source": "/api/db/update/:table", "destination": "/api/db/update" },
-    { "source": "/api/db/delete/:table", "destination": "/api/db/delete" }
+    { "source": "/api/db/:action/:table", "destination": "/api/db" }
   ]
 }

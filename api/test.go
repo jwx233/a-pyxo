@@ -1,9 +1,12 @@
-package handler
+package main
 
 import (
-	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
-	"time"
+	"strings"
+
+
 	"github.com/jwx233s/a-service/pkg/response"
 )
 

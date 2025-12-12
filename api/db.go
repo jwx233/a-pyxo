@@ -9,9 +9,9 @@ import (
 	"github.com/jwx233s/a-service/pkg/db"
 	"github.com/jwx233s/a-service/pkg/response"
 )
-// parsePath 从路径中提取 action 和 table
-// /api/db/get/user -> action="get", table="user"
-func parsePath(path string) (action, table string) {
+// parsePath 从路径中提取 table 和 action
+// /api/db/user/get -> table="user", action="get"
+func parsePath(path string) (table, action string) {
 	parts := strings.Split(path, "/")
 	if len(parts) >= 5 {
 		return parts[3], parts[4]
@@ -49,9 +49,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 解析路径，提取 action 和 table
-	action, table := parsePath(r.URL.Path)
+	table, action := parsePath(r.URL.Path)
 	if action == "" || table == "" {
-		response.Error(w, "Invalid path. Use: /api/db/{action}/{table}", 400)
+		response.Error(w, "Invalid path. Use: /api/db/{table}/{action}", 400)
 		return
 	}
 

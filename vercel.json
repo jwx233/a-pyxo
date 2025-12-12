@@ -1,6 +1,6 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/db/:action/:table", "destination": "/api/db" }
+    { "source": "/api/db/:table/:action", "destination": "/api/db" }
   ]
 }

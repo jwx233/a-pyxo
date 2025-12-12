@@ -64,10 +64,10 @@ var reservedParams = map[string]bool{
 func BuildFilter(r *http.Request) string {
 	var filters []string
 
-	debugLog("BuildFilter", "URL Query", r.URL.RawQuery)
-
+	debugLog("BuildFilter", "URL RawQuery", r.URL.RawQuery)
+	debugLog("BuildFilter", "URL Query", r.URL.Query())
 	for key, values := range r.URL.Query() {
-		debugLog("构建参数：",key,values)
+		// debugLog("构建参数：",key,values)
 		if len(values) == 0 {
 			continue
 		}

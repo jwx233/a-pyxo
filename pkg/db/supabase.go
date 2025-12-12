@@ -122,9 +122,9 @@ func buildJsonFilter(key, value string) string {
 		op := item.op
 		
 		// 匹配：输入的参数内容以自定义标识开头
-		if strings.HasPrefix(value, symbol){
+		if strings.HasPrefix(value, symbol) {
 			// 去掉操作符符号
-    		actualValue := strings.TrimPrefix(value, o.symbol)
+			actualValue := strings.TrimPrefix(value, symbol)
 			return "json->>" + key + "=" + op + "." + url.QueryEscape(actualValue)
 		}
 	}

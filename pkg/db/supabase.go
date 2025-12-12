@@ -65,6 +65,7 @@ func BuildFilter(r *http.Request) string {
 	var filters []string
 
 	debugLog("BuildFilter", "URL RawQuery", r.URL.RawQuery)
+	// 遍历所有 Query 参数 （包括/:action/:table 这个是vercel的特殊处理）
 	for key, values := range r.URL.Query() {
 		debugLog("BuildFilter", "Param", fmt.Sprintf("key=%s, values=%v", key, values))
 		if len(values) == 0 {
@@ -94,15 +95,40 @@ func BuildFilter(r *http.Request) string {
 	return result
 }
 
+// 操作符列表（按顺序排列）
+var operators = []struct {
+	symbol string
+	op     string
+}{
+	{"like:", "like"},  // 模糊匹配（必须在最前面）
+	{">=", "gte"},      // 大于等于
+	{"<=", "lte"},      // 小于等于
+	{"!=", "neq"},      // 不等于
+	{">", "gt"},        // 大于
+	{"<", "lt"},        // 小于
+}
+
 // buildJsonFilter 构建 jsonb 字段过滤条件
+// 支持: ?age=>18  ?age=<60  ?age=>=18  ?age=<=60  ?name=!=Tom  ?name=like:%Tom%
 func buildJsonFilter(key, value string) string {
 	// 去掉可选的 json. 前缀
 	key = strings.TrimPrefix(key, "json.")
 
-	// 值包含 . 说明带操作符: age=gt.18
-	if strings.Contains(value, ".") {
-		return "json->>" + key + "=" + value
+	// 按顺序检查操作符
+	for _, item := range operators {
+		// 自定义标识
+		symbol := item.symbol
+		// 系统操作标识
+		op := item.op
+		
+		// 匹配：输入的参数内容以自定义标识开头
+		if strings.HasPrefix(value, symbol){
+			// 去掉操作符符号
+    		actualValue := strings.TrimPrefix(value, o.symbol)
+			return "json->>" + key + "=" + op + "." + url.QueryEscape(actualValue)
+		}
 	}
+
 	// 默认 eq 操作符
 	return "json->>" + key + "=eq." + url.QueryEscape(value)
 }

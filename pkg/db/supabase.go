@@ -67,7 +67,7 @@ func BuildFilter(r *http.Request) string {
 	debugLog("BuildFilter", "URL Query", r.URL.RawQuery)
 
 	for key, values := range r.URL.Query() {
-		debugLog("构建参数：",key,value)
+		debugLog("构建参数：",key,values)
 		if len(values) == 0 {
 			continue
 		}

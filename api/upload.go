@@ -8,15 +8,15 @@ import (
 	"github.com/jwx233s/a-service/pkg/storage"
 )
 
-// UploadHandler 文件上传统一入口
-// 路由格式: POST /api/upload?bucket=xxx
+// Handler 文件上传统一入口
+// 路由格式: POST /upload?bucket=xxx
 //
 // 参数:
 //   - bucket: 存储桶名称（必填，通过 query 参数传递）
 //   - file: 文件内容（必填，通过 multipart/form-data 上传）
 //
 // 示例:
-//   POST /api/upload?bucket=avatars
+//   POST /upload?bucket=avatars
 //   Content-Type: multipart/form-data
 //   Body: file=@image.jpg
 //
@@ -28,7 +28,7 @@ import (
 //     },
 //     "message": "success"
 //   }
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	response.SetHeaders(w)
 	
 	// 处理 OPTIONS 预检请求

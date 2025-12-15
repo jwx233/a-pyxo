@@ -1,6 +1,7 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/pyxo/:table/:action", "destination": "/api/pyxo" }
+    { "source": "/api/pyxo/:table/:action", "destination": "/api/pyxo" },
+    { "source": "/upload", "destination": "/api/upload" }
   ]
 }

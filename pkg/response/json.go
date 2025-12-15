@@ -23,6 +23,9 @@ func SetHeaders(w http.ResponseWriter) {
 func JSON(w http.ResponseWriter, data []byte) {
 	SetHeaders(w)
 
+	// 调试：打印原始数据
+	println("[DEBUG] Raw data from DB:", string(data))
+
 	// 解析原始数据
 	var rawData []map[string]interface{}
 	json.Unmarshal(data, &rawData)
@@ -32,21 +35,21 @@ func JSON(w http.ResponseWriter, data []byte) {
 	for _, item := range rawData {
 		record := make(map[string]interface{})
 		
-		// 先添加 json 字段的所有内容
+		// 1. 先添加数据库的 id 字段
+		if id, ok := item["id"]; ok {
+			record["id"] = id
+		}
+		
+		// 2. 再展开 json 字段的所有内容
 		if jsonField, ok := item["json"].(map[string]interface{}); ok {
 			for key, value := range jsonField {
-				// 如果 json 中有 id 字段，重命名为 json.id
+				// 如果 json 中有 id 字段，重命名为 json.id（避免覆盖数据库 id）
 				if key == "id" {
 					record["json.id"] = value
 				} else {
 					record[key] = value
 				}
 			}
-		}
-		
-		// 再添加数据库的 id 字段
-		if id, ok := item["id"]; ok {
-			record["id"] = id
 		}
 		
 		result = append(result, record)

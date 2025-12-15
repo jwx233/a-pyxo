@@ -1,6 +1,6 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/db/:table/:action", "destination": "/api/db" }
+    { "source": "/api/pyxo/:table/:action", "destination": "/api/pyxo" }
   ]
 }

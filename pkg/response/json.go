@@ -19,20 +19,37 @@ func SetHeaders(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
-// JSON 返回成功响应，只提取 json 字段内容
+// JSON 返回成功响应，将 id 和 json 字段内容合并到同一对象
 func JSON(w http.ResponseWriter, data []byte) {
 	SetHeaders(w)
 
-	// 解析原始数据，提取 json 字段
+	// 解析原始数据
 	var rawData []map[string]interface{}
 	json.Unmarshal(data, &rawData)
 
-	// 只保留 json 字段的内容
-	var result []interface{}
+	// 合并 id 和 json 字段内容
+	var result []map[string]interface{}
 	for _, item := range rawData {
-		if jsonField, ok := item["json"]; ok {
-			result = append(result, jsonField)
+		record := make(map[string]interface{})
+		
+		// 先添加 json 字段的所有内容
+		if jsonField, ok := item["json"].(map[string]interface{}); ok {
+			for key, value := range jsonField {
+				// 如果 json 中有 id 字段，重命名为 json.id
+				if key == "id" {
+					record["json.id"] = value
+				} else {
+					record[key] = value
+				}
+			}
 		}
+		
+		// 再添加数据库的 id 字段
+		if id, ok := item["id"]; ok {
+			record["id"] = id
+		}
+		
+		result = append(result, record)
 	}
 
 	resp := Response{

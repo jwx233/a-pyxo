@@ -6,13 +6,15 @@ import (
 	"github.com/jwx233s/a-service/pkg/response"
 )
 
+// Handler 测试接口
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// CORS preflight
 	response.SetHeaders(w)
+	
 	if r.Method == "OPTIONS" {
 		return
 	}
 
-	// Simple test endpoint: return a JSON hello message
-	response.Success(w, map[string]string{"message": "Hello World"})
+	response.Success(w, map[string]string{
+		"message": "Hello World",
+	})
 }

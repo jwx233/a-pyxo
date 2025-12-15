@@ -9,7 +9,7 @@ import (
 // Handler 测试接口 - Hello World
 func Handler(w http.ResponseWriter, r *http.Request) {
 	response.SetHeaders(w)
-	
+
 	if r.Method == "OPTIONS" {
 		return
 	}

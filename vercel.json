@@ -3,6 +3,6 @@
   "rewrites": [
     { "source": "/api/pyxo/:table/:action", "destination": "/api/pyxo" },
     { "source": "/upload", "destination": "/api/upload" },
-    { "source": "/test", "destination": "/api/test" }
+    { "source": "/hello", "destination": "/api/hello" }
   ]
 }

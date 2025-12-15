@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"github.com/jwx233s/a-service/pkg/response"
 )
 
-// Handler 测试接口
+// Handler 测试接口 - Hello World
 func Handler(w http.ResponseWriter, r *http.Request) {
 	response.SetHeaders(w)
 	

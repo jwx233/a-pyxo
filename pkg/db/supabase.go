@@ -11,7 +11,7 @@ import (
 // ============ 配置（修改这里） ============
 
 const (
-	SUPABASE_URL = "https://arwnlqnzofqqxjnlvgqm.supabase.co"
+	SUPABASE_URL = "https://fyhpixiizagsprclogct.supabase.co"
 	SUPABASE_KEY = "sb_secret_QydBLXgqdeUFl8-jmr9fsQ_L9H-DTNC" // 服务端密钥
 )
 

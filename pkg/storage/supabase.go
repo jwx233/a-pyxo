@@ -15,7 +15,7 @@ import (
 // ============ 配置 ============
 
 const (
-	STORAGE_BASE_URL = "https://arwnlqnzofqqxjnlvgqm.supabase.co/storage/v1"
+	STORAGE_BASE_URL = "https://fyhpixiizagsprclogct.storage.supabase.co/storage/v1"
 )
 
 // UploadFile 上传文件到 Supabase Storage

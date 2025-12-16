@@ -83,8 +83,8 @@ func BuildFilter(r *http.Request) string {
 		}
 		value := values[0]
 
-		// 所有参数都查 jsonb 字段
-		filter := buildJsonFilter(key, value)
+		// 构建过滤条件（id 直接查询，其他查 json 字段）
+		filter := buildFilter(key, value)
 		debugLog("BuildFilter", key+" filter", filter)
 		filters = append(filters, filter)
 	}
@@ -107,27 +107,37 @@ var operators = []struct {
 	{"<", "lt"},        // 小于
 }
 
-// buildJsonFilter 构建 jsonb 字段过滤条件
-// 支持: ?age=>18  ?age=<60  ?age=>=18  ?age=<=60  ?name=!=Tom  ?name=like:%Tom%
-func buildJsonFilter(key, value string) string {
+// 数据库原生字段（不在 json 中）
+var nativeFields = map[string]bool{
+	"id": true,
+}
+
+// buildFilter 构建字段过滤条件
+// id 字段直接查询，其他字段查询 json 内部
+func buildFilter(key, value string) string {
 	// 去掉可选的 json. 前缀
 	key = strings.TrimPrefix(key, "json.")
 
+	// 判断是否为原生字段
+	isNative := nativeFields[key]
+
 	// 按顺序检查操作符
 	for _, item := range operators {
-		// 自定义标识
-		symbol := item.symbol
-		// 系统操作标识
-		op := item.op
-		// 匹配：输入的参数内容以自定义标识开头
-		if strings.HasPrefix(value, symbol) {
-			// 去掉操作符符号
-			actualValue := strings.TrimPrefix(value, symbol)
-			return "json->>" + key + "=" + op + "." + url.QueryEscape(actualValue)
+		if strings.HasPrefix(value, item.symbol) {
+			actualValue := strings.TrimPrefix(value, item.symbol)
+			if isNative {
+				// 原生字段直接查询
+				return key + "=" + item.op + "." + url.QueryEscape(actualValue)
+			}
+			// json 字段
+			return "json->>" + key + "=" + item.op + "." + url.QueryEscape(actualValue)
 		}
 	}
 
 	// 默认 eq 操作符
+	if isNative {
+		return key + "=eq." + url.QueryEscape(value)
+	}
 	return "json->>" + key + "=eq." + url.QueryEscape(value)
 }
 

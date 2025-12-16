@@ -21,12 +21,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bucket := r.URL.Query().Get("bucket")
-	if bucket == "" {
-		response.Error(w, "Missing bucket parameter", 400)
-		return
-	}
-
 	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
 		response.Error(w, "Failed to parse form: "+err.Error(), 400)
@@ -40,7 +34,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	fileURL, err := storage.UploadFile(bucket, file, header)
+	fileURL, err := storage.UploadFile("file", file, header)
 	if err != nil {
 		response.Error(w, "Upload failed: "+err.Error(), 500)
 		return

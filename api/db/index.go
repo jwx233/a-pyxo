@@ -96,7 +96,12 @@ func doUpdate(ctx *reqContext) ([]byte, error) {
 	if ctx.filter == "" || ctx.body == "" {
 		return nil, fmt.Errorf("Missing filter or body")
 	}
-	return db.Update(ctx.table, ctx.filter, wrapJsonBody(ctx.body))
+	// 合并更新：只更新传递的字段，保留原有字段
+	mergedBody, err := db.MergeUpdate(ctx.table, ctx.filter, ctx.body)
+	if err != nil {
+		return nil, err
+	}
+	return db.Update(ctx.table, ctx.filter, mergedBody)
 }
 
 func doDelete(ctx *reqContext) ([]byte, error) {

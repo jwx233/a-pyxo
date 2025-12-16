@@ -1,6 +1,7 @@
 package db
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -162,4 +163,51 @@ func debugLog(action, key, value string) {
 	if Debug {
 		fmt.Printf("[DEBUG] %s | %s: %s\n", action, key, value)
 	}
+}
+
+
+// MergeUpdate 合并更新：先查询原数据，再合并新数据
+// 只更新传递的字段，保留原有字段
+func MergeUpdate(table, filter, newBody string) (string, error) {
+	// 1. 先查询原数据
+	query := "select=json&" + filter
+	data, err := Select(table, query)
+	if err != nil {
+		return "", fmt.Errorf("Failed to fetch original data: %v", err)
+	}
+
+	// 2. 解析原数据
+	var results []map[string]interface{}
+	if err := json.Unmarshal(data, &results); err != nil {
+		return "", fmt.Errorf("Failed to parse original data: %v", err)
+	}
+
+	if len(results) == 0 {
+		return "", fmt.Errorf("Record not found")
+	}
+
+	// 获取原 json 字段
+	originalJson, ok := results[0]["json"].(map[string]interface{})
+	if !ok {
+		originalJson = make(map[string]interface{})
+	}
+
+	// 3. 解析新数据
+	var newData map[string]interface{}
+	if err := json.Unmarshal([]byte(newBody), &newData); err != nil {
+		return "", fmt.Errorf("Failed to parse new data: %v", err)
+	}
+
+	// 4. 合并：新数据覆盖原数据中的对应字段
+	for key, value := range newData {
+		originalJson[key] = value
+	}
+
+	// 5. 构建更新 body
+	mergedJson, err := json.Marshal(originalJson)
+	if err != nil {
+		return "", fmt.Errorf("Failed to marshal merged data: %v", err)
+	}
+
+	return `{"json":` + string(mergedJson) + `}`, nil
 }

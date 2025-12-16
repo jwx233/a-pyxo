@@ -2,7 +2,7 @@
   "version": 2,
   "rewrites": [
     { "source": "/api/pyxo/:table/:action", "destination": "/api/pyxo/index" },
-    { "source": "/upload", "destination": "/api/upload/index" },
+    { "source": "/api/file/:action", "destination": "/api/file/index" },
     { "source": "/hello", "destination": "/api/hello/index" }
   ]
 }

@@ -85,3 +85,37 @@ func debugLog(action, key, value string) {
 		fmt.Printf("[DEBUG Storage] %s | %s: %s\n", action, key, value)
 	}
 }
+
+
+// DeleteFile 删除 Supabase Storage 中的文件
+// bucket: 存储桶名称
+// filename: 文件名
+func DeleteFile(bucket, filename string) error {
+	deleteURL := fmt.Sprintf("%s/object/%s/%s", STORAGE_BASE_URL, bucket, filename)
+	debugLog("DeleteFile", "Delete URL", deleteURL)
+
+	req, err := http.NewRequest("DELETE", deleteURL, nil)
+	if err != nil {
+		return fmt.Errorf("Failed to create request: %v", err)
+	}
+
+	req.Header.Set("Authorization", "Bearer "+db.SUPABASE_KEY)
+	req.Header.Set("apikey", db.SUPABASE_KEY)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("Failed to delete file: %v", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, _ := io.ReadAll(resp.Body)
+	debugLog("DeleteFile", "Response Status", fmt.Sprintf("%d", resp.StatusCode))
+	debugLog("DeleteFile", "Response Body", string(respBody))
+
+	if resp.StatusCode != 200 && resp.StatusCode != 204 {
+		return fmt.Errorf("Delete failed with status %d: %s", resp.StatusCode, string(respBody))
+	}
+
+	return nil
+}

@@ -12,7 +12,7 @@ import (
 
 const (
 	SUPABASE_URL = "https://arwnlqnzofqqxjnlvgqm.supabase.co"
-	SUPABASE_KEY = "sb_publishable_eGii7SaCtXirDh2O5suItQ_L_eZtxuJ"
+	SUPABASE_KEY = "sb_secret_QydBLXgqdeUFl8-jmr9fsQ_L9H-DTNC" // 服务端密钥
 )
 
 

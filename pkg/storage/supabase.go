@@ -15,8 +15,7 @@ import (
 // ============ 配置 ============
 
 const (
-	STORAGE_BASE_URL = "https://arwnlqnzofqqxjnlvgqm.storage.supabase.co/storage/v1"
-	STORAGE_ENDPOINT = STORAGE_BASE_URL + "/s3"
+	STORAGE_BASE_URL = "https://arwnlqnzofqqxjnlvgqm.supabase.co/storage/v1"
 )
 
 // UploadFile 上传文件到 Supabase Storage
@@ -40,20 +39,20 @@ func UploadFile(bucket string, file multipart.File, header *multipart.FileHeader
 		return "", fmt.Errorf("Failed to read file: %v", err)
 	}
 	
-	// 构建上传 URL
-	uploadURL := fmt.Sprintf("%s/%s/%s", STORAGE_ENDPOINT, bucket, filename)
+	// 构建上传 URL（使用 Supabase Storage API）
+	uploadURL := fmt.Sprintf("%s/object/%s/%s", STORAGE_BASE_URL, bucket, filename)
 	debugLog("UploadFile", "Upload URL", uploadURL)
 	
 	// 创建请求
-	req, err := http.NewRequest("PUT", uploadURL, bytes.NewReader(fileBytes))
+	req, err := http.NewRequest("POST", uploadURL, bytes.NewReader(fileBytes))
 	if err != nil {
 		return "", fmt.Errorf("Failed to create request: %v", err)
 	}
 	
 	// 设置请求头
 	req.Header.Set("Authorization", "Bearer "+db.SUPABASE_KEY)
+	req.Header.Set("apikey", db.SUPABASE_KEY)
 	req.Header.Set("Content-Type", header.Header.Get("Content-Type"))
-	req.Header.Set("x-amz-acl", "public-read")
 	
 	// 发送请求
 	client := &http.Client{}
